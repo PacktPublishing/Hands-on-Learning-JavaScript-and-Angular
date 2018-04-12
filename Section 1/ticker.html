@@ -1,0 +1,160 @@
+<html>
+    <head>
+        <title>
+            my first app!
+        </title>
+        <script>
+        	// array definition example.
+        	var dreadedNumbers = [3, -1, 0];
+        	// function assigned to a variable.
+            var x = function fwd() {
+                var boxHandle = document.getElementById('box');
+                var boxVal = parseInt(boxHandle.value);
+                boxHandle.value = boxVal + 1;
+                // self invoking function
+                (function (){
+					var boxVal = 4;
+					console.log(boxVal);
+                })();
+                console.log(boxVal);
+                
+                // dreaded check
+                if (dreadedLabelChecker(this.dreadedNumbers, parseInt(boxHandle.value))) {
+                	document.getElementById('dreadedLabel').innerHTML = "this is a dreaded number :O";
+                } else {
+                	document.getElementById('dreadedLabel').innerHTML = "no worries";
+                }
+            }
+            function back() {
+                var boxHandle = document.getElementById('box');
+                var boxVal = parseInt(boxHandle.value);
+                boxHandle.value = boxVal - 1;
+                 if (dreadedLabelChecker(this.dreadedNumbers, parseInt(boxHandle.value))) {
+                	document.getElementById('dreadedLabel').innerHTML = "this is a dreaded number :O";
+                } else {
+                	document.getElementById('dreadedLabel').innerHTML = "no worries";
+                }
+                
+                this.multiply(2,3);
+                
+            }
+            function reset() {
+                alert('Oh no!! You have reset you ticker count.');
+                var boxHandle = document.getElementById('box');
+                boxHandle.value = 1;
+            }
+            function check() {
+                var boxHandle = document.getElementById('box');
+                var boxVal = parseInt(boxHandle.value);
+                var boxLabelHandle = document.getElementById('box-label');
+                if (boxVal == 5) {
+                    boxLabelHandle.innerText = "count reached!";
+                } else {
+                    boxLabelHandle.innerText = "count not reached!";
+                }
+            }
+            // illistrates JS functions are objects.
+            function multiply(a,b) {
+	            console.log('arg length in mulitply is :' + arguments.length);
+                console.log(this.multiply.toString());
+            	return a*b;
+            }
+            function evaluate() {
+                var boxHandle = document.getElementById('box');
+                var boxVal = parseInt(boxHandle.value);
+                if (boxVal %2 == 0) {
+                    return "EVEN";
+                } else {
+                    return "ODD";
+                }
+            }
+
+            function assessType () {
+                var boxLabelHandle = document.getElementById('box-label');
+                switch(evaluate()) {
+                    case "EVEN":
+                        boxLabelHandle.innerText = "EVEN number";
+                        break;
+
+                    case "ODD":
+                        boxLabelHandle.innerText = "ODD number";
+                        break;
+
+                }
+            }
+            function dreadedLabelChecker(arr, number) {
+            	for (i=0; i<arr.length; i++) {
+                	if (arr[i] == number) {
+                    	return true;
+                    }
+                }
+                return false;
+            }
+            function profiler() {
+             var profile = {};
+             var boxHandle = document.getElementById('box');
+             var boxVal = parseInt(boxHandle.value);
+			
+            if (boxVal >= 0 ) {
+            	profile.tickSign = 'positive';
+            } else {
+            	profile.tickSign = 'negative';
+            }
+            
+           	switch(evaluate()) {
+            case "EVEN":
+            	profile.type ="even";
+                break;
+            case "ODD":
+	            profile.type ="odd";
+                break;
+            }
+                profileLoader(profile);
+            }
+            
+            function profileLoader(profile) {
+            	var pr = "";
+				for (var key in profile) {
+                	var value = profile[key];
+                    pr = pr + key + ": " + value + "\n";
+                }
+                document.getElementById('profile').innerHTML = pr;
+            }
+        </script>
+    </head>
+    <body>
+        <h2> Ahhoy! this is my first ticker app!</h2>
+        <br>
+        Click me to tick fwd:
+        <button id='x' onclick="x()"> + </button>
+
+        <br>
+        Click me to tick back:
+        <button id='y' onclick="back()"> - </button>
+
+        <br>
+        Click me to reset:
+        <button id='r' onclick="reset()"> r </button>
+
+        <br>
+        <input type='text' value='1' id='box' />
+
+        <br>
+        <button id='checker' onclick='check()'>check</button>
+
+        <label id='box-label'></label>
+
+        <button id='typeChecker' onclick='assessType()'>typeCheck</button>
+        
+        <br>
+        Dreaded status:
+        <label id='dreadedLabel'>none</label>
+        
+        <br>
+		Click here to generate count profile:
+        <button id='profile-gen' onclick='profiler()'>generate</button>
+        <br>
+        <label id='profile'></label>
+
+    </body>
+</html>

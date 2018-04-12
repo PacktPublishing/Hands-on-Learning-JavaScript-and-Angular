@@ -1,0 +1,109 @@
+Welcome to fourth and final video of section 2
+
+In this video we will talk about directives:
+Agenda:
+- What are directives in angular
+- types of directives in angular
+- Demo!!
+
+
+
+What is directives in angular?
+So far we have seen angular templates are dynamic in nature, that is angular render a template according to instructions
+given by its component class.
+
+But internally things are bit more interesting, actually angular as platform renders DOM according to 
+the instructions given by directives. A angular component is actually a DIRECTIVE_WITH_A_TEMPLATE. Likewise 
+@Component decorator for classes is basically an extension on @Directive decorator with some component specific 
+extensions.
+
+Apart from components which is essentially a directive there are two more types of directives:
+- Structural directives
+- Attribute directives
+
+Lets have a look at structural directives:
+- structural directives are responsible for manipulating DOM based on the data state in the app.
+these manipulations can be adding, removing elements from dom.
+
+Lets write some code to understand structural directives and understand them better:
+
+Let create another component like we did for country-selected, this time we need a component to 
+display list of destinations in the selected country
+
+command: ng generate component destination-list
+
+now again consider selected country as the parameter binding to this component as we covered in the 
+data binding video. 
+// refer code and walk talk through @input member creation, and html template 
+
+Now i am pretty sure u must have already noticed *ngFor here, well thats one of your structural directives 
+it manipulates DOM by adding new list item elements based on the destinations configured for a country.
+
+Now coming back to a question i left with you where in empty id was displayed when you first launch the app,
+well that can be solved with another structural directive *ngIf
+
+refer <div *ngIf="country"> wrapped around templates in selected-country and destinations component views.
+
+please note the structural directive syntax, this is more of a syntactic sugar, essentially these get converted
+into somthing like below
+
+<li *ngIf="country">
+    code
+</li>
+
+<ng-select [ngIf]="country">
+    <li>
+        code
+    </li>
+</ng-select>
+
+Another useful structural directive i encourage you to practice is ngSwitch, it very much like ngIf but prevents you from
+writing complext nesting conditional flows in your code.
+
+
+- Now lets understand attribute directives:
+Attribute directive manipulates appearence and behavior of a DOM element, unlike structural directive it doesnot 
+add or remove elements from DOM.
+
+This is mainly used to define reusable styling feature, lets write some code to understand this better.
+
+Lets create an angular directive using angular cli using below command
+// command: ng generate directive highlight
+
+notice new file called highlight.directive.ts being generated, now use ElementRef class from angular/core 
+module to get handle on DOM elements.
+
+to understand this better we will keep this directive simple and will effect bg color of all elements that
+chooses to include this attribute directive in its attribute list.
+
+in the constructor lets assign Aqua color to the element ref obtained, 
+// note: to practice you can try to make this user input driven, you provide
+// color options as list of radio buttons and the selected color is choosen to
+// highlight the background of the elements.
+
+
+now come to index-list.component.html (template file) and assign this directive to heading of the template and 
+then let the magic unfold. :)
+
+
+This all about directives in angular.
+and with this we come to end of this section, hope you are having a great time learning this exciting platform for 
+FE development.
+
+In this section we covered:
+- What is angular?
+- Set up of angular and run our own app
+- What are components in angular world 
+- how to create components and more importantly when to create components.
+- Data binding one way in either directions and two way binding 
+- Directives to manipulates view in accordance with your data.
+
+
+
+In the next section we will talk about 
+- Services in angular
+- Dependency injections in angular
+
+
+
+

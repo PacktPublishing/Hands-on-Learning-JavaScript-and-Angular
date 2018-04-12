@@ -1,0 +1,269 @@
+Hello and welcome to 2nd video of this section
+
+We will go back and address the problem we still have left open in our blog app. 
+In the previous video where we learnt configure our countryService i mentioned that we will later learn how to 
+get the country data with an actuall http invocation.
+Well that time has come!
+
+So in this video we will:
+- How to use http client lib to make remote calls
+- how to simulate a data server 
+- We will use the same in our app.
+
+
+So lets get going:
+
+To make Http calls we will use angular's HttpClient which is nothing but a library that enables your app to 
+communicate with remote servers
+
+Now to use this module, jump over to your AppModule file 
+and  
+- import HttpClientModule from @angular/common/http 
+- Add this to @NgModule.imports array
+
+Ok, now here is where it gets interesting.
+Since i dont have any actual public api hosted which is serving 
+country data, i am going to use a nice little library that help me 
+mimic the same.
+The lib is called json-server
+Show json-server git page here:
+https://github.com/typicode/json-server#example 
+
+You can totally avoid this setup if you already have functional api 
+that is serving the data you need. 
+
+so lets install it quickly
+npm install -g json-server
+
+now we are going to server our country data from json server and access it our 
+http endpoint.
+
+Just walk through the contents of db.json file here.
+And demo a read on http://localhost:3000/countries
+
+Now lets come to our country countryService
+
+Here we start with importing the HttpClient and HttpHeaders
+
+now lets refactor our api methods i.e. 
+-getCountries and
+-getCountryWithId
+
+So i am going to comment out the current implementations, as we
+will need them again when ill talking about deploying your
+angular app the reason is we wont have our locally running 
+apis from our host app, we need a apis either in the same subnet 
+or public accessible over internet. So to avoid that hassle
+we will move back to serving mock file when learning deplyment.
+
+ok now to our new implementations of these api methods:
+********************************************
+import { Injectable, Optional } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { COUNTRIES } from './mock-countries';
+import {Country} from './country';
+
+import {LoggerService} from './logger.service';
+
+@Injectable()
+export class CountryService {
+
+  private countryServiceURL = "http://localhost:3000/countries";
+  
+  // constructor(@Optional() private loggerService: LoggerService) { }
+  constructor(private loggerService: LoggerService
+    , private httpClient:HttpClient) { }
+
+  // getCountries(): Observable<Country[]> {
+  //   this.loggerService.log("Getting list of countries..");
+  //   return of(COUNTRIES);
+  // }
+
+  // getCountryWithId(id): Observable<Country> {
+  //   this.loggerService.log("Getting country with id countries..");
+  //   return of(COUNTRIES.find(country => country.id === id));
+  // }
+
+  getCountries(): Observable<Country[]> {
+    this.loggerService.log("Getting list of countries..");
+    // return of(COUNTRIES);
+    return this.httpClient.get<Country[]>(this.countryServiceURL);
+  }
+
+
+  getCountryWithId(id): Observable<Country> {
+    this.loggerService.log("Getting country with id countries..");
+    return this.httpClient.get<Country>(this.countryServiceURL + "/"+id);
+  }
+}
+
+**********************************************************
+
+
+And thats it, now lets try to make change in the data being 
+served from local db.json file
+
+*****
+{
+          "id": 4,
+          "name": "Tauranga",
+          "desc": "Pacific coastline. "
+        }
+******
+
+There you go! your app is now dealing with dynamic content, your 
+componets are agnostic to what is the source of the data. We can 
+very easily go back to serving mock data we did before without 
+touching any of the components!
+
+Now network calls are prone to transient errors and your app 
+should be robust enough to handle these errors
+
+So how do we do that?
+
+we can use catchError method from RxJS /operator library, lets see 
+how to use it
+Well we are simply going to pipe the return observable through 
+error catcher
+
+The catchError() operator intercepts an Observable that failed. 
+It simply passes an error handler to the error and this handler
+decides what it wants to do with the error.
+
+import { catchError } from 'rxjs/operators';
+
+change the implementation of api methods
+************************
+getCountries(): Observable<Country[]> {
+    this.loggerService.log("Getting list of countries..");
+    // return of(COUNTRIES);
+    return this.httpClient.get<Country[]>(this.countryServiceURL).pipe(
+      catchError(this.handleError('getCountries', []))
+    );
+  }
+**************************
+
+now lets define this handleError and then we can understand
+what exactly is going on here
+
+handleError needs to be simple handler function that can be shared by differt country 
+service related apis. So this has to be generic enough to satisfy contract of 
+each api that this service may support.
+
+
+
+********************************
+/**
+ * Handle Http operation that failed.
+ * Let the app continue.
+ * @param operation - name of the operation that failed
+ * @param result - optional value to return as the observable result
+ */
+private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+  
+      console.error(error); // log to console instead
+  
+      this.loggerService.log(`${operation} failed: ${error.message}`);
+  
+      return of(result as T);
+    };
+  }
+
+************************************
+
+simlilary lets modify our getCountryWithId api to handle error
+**********
+  getCountryWithId(id): Observable<Country> {
+    this.loggerService.log("Getting country with id countries..");
+    return this.httpClient.get<Country>(this.countryServiceURL + "/"+id).pipe(
+      catchError(this.handleError<Country>(`getCountryWithId id=${id}`))
+    );
+  }
+***********
+
+PART-2
+
+Ok, so now lets try another operation to complete our understanding 
+of this module.
+Lets allow user to add new country. We will be using PPOST operation here
+
+so lets add the api method to the service class.
+
+**************
+ const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json'
+  })
+};
+// this goes outisde the class at the top.
+
+// below inside the class.
+  /**
+   * Add new country to db
+   * @param country 
+   */
+  addCountry (country: Country): Observable<Country> {
+    return this.httpClient.post<Country>(this.countryServiceURL, country, httpOptions).pipe(
+      catchError(this.handleError<Country>('addCountry'))
+    );
+  }
+  ****************
+
+Now with service support in place, lets quickly come over to index list components
+as thats where we want to allow user to be able to create new
+country.
+
+*************
+<div>
+  <label>Country name:
+    <input #countryName />
+  </label>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="add(countryName.value); countryName.value=''">
+    add
+  </button>
+</div>
+*****************
+
+Now we just need to tie this up with ts file of this component:
+*****************
+/**
+   * Initiates country add flow.
+   * @param name 
+   */
+  add(name: String): void {
+    name = name.trim();
+    if (!name) {
+      return;
+    }
+    this.countryService.addCountry({name} as Country)
+    .subscribe(country => {
+      this.countries.push(country);
+    })
+  }
+
+***********************
+
+And there you have it your add countries / POST 
+call in action.
+
+NOw for practice i strongly encourage you to practice operations
+like PUT/DELETE/UPDATE 
+
+Alright, so in this video
+- we learnt how we can similate our own simple server
+- How to use httpclient to interact with web apis to interact with
+real time data.
+And we learnt it by implement a GET and POST call for our app.
+- we also learnt how make this integration robust by understanding 
+error handling and piping our response through a error handler.
+
+Thats all for this video, in the next video we will 
+leant about unit testing, why we need it and how can we do it.
+
+
+
+

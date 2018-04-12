@@ -1,0 +1,11 @@
+
+<h2><p appHighlight>Countries covered</p></h2>
+<ul class="countries">
+  <li *ngFor="let country of countries" (click)='onSelect(country)'>
+    <span class="badge">{{country.id}}</span> {{country.name}}
+  </li>
+</ul>
+<br/>
+<app-destination-list [country]="selectedCountry"></app-destination-list>
+<br/><br/>
+<app-country-selected [country]="selectedCountry"></app-country-selected>

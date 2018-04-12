@@ -1,0 +1,96 @@
+Hello and welcome to fouth and final video of this section.
+
+In this video we will continue our research on DI in angular that we started 
+inlast video. Here we will concentrate on :
+
+- Seeing DI in action
+- Variation we can use while injecting dependencies
+    > Service as a dependency
+    > optional dependency
+    > non-class dependency
+    > scope
+- Demo
+
+
+So to see DI in action, we can go back to the point where we injected Country service 
+as a dependencies in the index-list component.
+
+Now this was a simple and straight forward example where in CountryService dependencies 
+doesnt have its own dependencies. let consider one such case, lets say the CountryService 
+service depends upon a logger service which helps in logging various remote call
+meta state info.
+
+SERVICE AS A DEPENDENCY:
+Let create this logger service first.
+use command: ng generate service logger --module=app
+
+
+define log methods, does an output on console.log and now 
+input this service as dependency in CountryService, by including it in its constructor and thats it,
+upon reload of you app on browser you should see logger being invoked and log in console output.
+
+Please note in this case it becomes imperative for the CountryService class to use @injectable decorator
+as its consuming logger service.
+
+OPTIONAL DEPENDENCY:
+Also same logger service can be marked optional by using Optional class from core module, as shown in the commented code.
+when using optional developer should ensure it has sufficient null checks in place as the dependency is 
+marked null when not needed.
+
+So far we have seen classes marked as dependencies, well angular allows you to inject objects, string literals etc as dependencies 
+as well.
+
+NON-CLASS DEPENDENCY INJECTIONS:
+This too is a very important functionlity that angular has to offer, as this enables you to 
+keep static config of your apps out side the main components and easily tweakable.
+
+Lets understand with the help of an example, we saw that title of the app we have build so 
+far was being consumed from the root component i.e. app.component.ts while this may be okay for
+small number of config objects , the same can become a real mess as the config variables increase.
+for e.g. env vars, external svc configs etc.
+
+in such cases it is ideal to use these objects as dependencies and inject them to component as and 
+when needed.
+
+Before we dive into how part of this, lets understand this:
+
+when we register a provider with an injector(like we did for CountryService in app.module.ts),
+angular internally maintains a token-provider map. for example when we register CountryService as 
+ provider to app's root injector, the injector will maintain CountryService token as key of the map
+ whoes value is the provider. Now we can relate to this easily for most of the cases but what if 
+ the dependencies i want to inject are not classes? in that case we dont have any token to serve as 
+ key in injector's token-provider map.
+
+Here is how we can do this:
+1. Lets create a contract interface that defines the outline of our APP config. Let call it 
+global-config.interface.ts 
+2. Define field you want to be configurable, for now lets have app_title only here.
+3. now lets create a global-config.ts which uses above interface and uses injectiontoken to generate
+token of interface type (refer code)
+4. Now we have token valuetype available as GlobalConfig wrapped around by InjectionToken.
+
+Why need InjectionToken class, why not use interface directly insteand, you ask? :)
+Well interfaces are design time concept imposed by Angular framework, when the code gets 
+traspiled into regular JS code, there is no such thing as interfaces and hence that can 
+no longer serve as token to injector.
+
+Now tweak the value of title from the config file and see the same reflecting on the app in browser.
+
+
+SCOPING:
+before we finish our discussion on DI, i also wanted to discuss scoping of injections in angular,
+We you can manipulate the scope of your dependency injections in angular. Say you want country service 
+to be used as injection by index-list component and its childs "only" in that case you 
+should register your dependency provider in the provider array of the component itself instead of 
+doing it for entire app when doing it in app.module.ts
+
+
+
+Alright, i hope you had fun learning DI for angular. we did went a bit deep into this but then
+i think it is an important concept to understand not just when you are writing your own code, but 
+equally important when you are reading code written by others.
+
+This brings us to end of this section, in the next section we dive into routing and http 
+aspects of angular.
+
+Stay tuned, thanks for watching.

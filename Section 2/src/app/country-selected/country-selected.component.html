@@ -1,0 +1,10 @@
+<div *ngIf="country">
+  <h2>{{ country.name | uppercase }} Selected</h2>
+  <div><span>id: </span>{{country.id}}</div>
+
+  <div>
+    <label>name:
+      <input [(ngModel)]="country.name" placeholder="name"/>
+    </label>
+  </div>
+</div>

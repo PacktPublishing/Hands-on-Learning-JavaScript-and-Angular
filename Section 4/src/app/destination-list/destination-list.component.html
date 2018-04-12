@@ -1,0 +1,12 @@
+<div *ngIf="country">
+  <h2>Destination covered in {{country.name}}</h2>
+
+  <ul class="country">
+    <li *ngFor="let destination of country.destinations">
+      <strong>{{destination.name}}</strong>
+      <br/>
+      {{destination.desc}}
+      <br/><br/><br/>
+    </li>
+  </ul>
+</div>

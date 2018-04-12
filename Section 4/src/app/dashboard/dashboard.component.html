@@ -1,0 +1,11 @@
+<br/><br/><br/>
+<h3>Top countries visited</h3>
+<div class="grid grid-pad">
+  <a *ngFor="let country of topCountries" class="col-1-4" routerLink="/destinations/{{country.id}}">
+    <!-- to be added later on -->
+    <!-- routerLink="/destinations/{{country.id}}" -->
+    <div class="module hero">
+      <h4>{{country.name}}</h4>
+    </div>
+  </a>
+</div>

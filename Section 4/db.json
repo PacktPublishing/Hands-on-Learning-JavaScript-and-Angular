@@ -1,0 +1,80 @@
+{
+  "countries": [
+    {
+      "id": 1,
+      "name": "New Zealand",
+      "destinations": [
+        {
+          "id": 1,
+          "name": "Bay of Islands",
+          "desc": "Sceanic bueaty & water sports"
+        },
+        {
+          "id": 2,
+          "name": "Milford sound",
+          "desc": "glaciers, mountain and lakes."
+        },
+        {
+          "id": 3,
+          "name": "Auckland",
+          "desc": "Mueseums and bars. "
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "USA",
+      "destinations": [
+        {
+          "id": 1,
+          "name": "Vegas",
+          "desc": "Casinos and music "
+        },
+        {
+          "id": 2,
+          "name": "Napa Valley ",
+          "desc": "Wines"
+        },
+        {
+          "id": 3,
+          "name": "LosAngeles ",
+          "desc": "Hollywood and universal studios. "
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "India",
+      "destinations": [
+        {
+          "id": 1,
+          "name": "Goa",
+          "desc": "Beaches and party "
+        },
+        {
+          "id": 2,
+          "name": "Rajasthan",
+          "desc": "Desert and forts"
+        },
+        {
+          "id": 3,
+          "name": "Karnataka",
+          "desc": "Ghats, Forests and WildLife "
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Australia",
+      "destinations": []
+    },
+    {
+      "name": "South Africa",
+      "id": 5
+    },
+    {
+      "name": "Sweden",
+      "id": 6
+    }
+  ]
+}
